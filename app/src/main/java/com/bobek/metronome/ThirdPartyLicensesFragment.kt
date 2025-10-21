@@ -33,12 +33,15 @@ class ThirdPartyLicensesFragment : PreferenceFragmentCompat() {
         val context = preferenceManager.context
         val screen = preferenceManager.createPreferenceScreen(context)
 
-        context.resources
-            .openRawResource(R.raw.third_party_license_metadata)
-            .use(OssLicensesParser::parseMetadata)
-            .sortedBy { metadata -> metadata.libraryName }
-            .map(::getPreference)
-            .forEach(screen::addPreference)
+        val metadataResId = context.resources.getIdentifier("third_party_license_metadata", "raw", context.packageName)
+        if (metadataResId != 0) {
+            context.resources
+                .openRawResource(metadataResId)
+                .use(OssLicensesParser::parseMetadata)
+                .sortedBy { metadata -> metadata.libraryName }
+                .map(::getPreference)
+                .forEach(screen::addPreference)
+        }
 
         preferenceScreen = screen
     }
@@ -54,11 +57,15 @@ class ThirdPartyLicensesFragment : PreferenceFragmentCompat() {
     }
 
     private fun navigateToThirdPartyLicenseFragment(metadata: ThirdPartyLicenseMetadata) {
-        val thirdPartyLicense = requireContext().resources
-            .openRawResource(R.raw.third_party_licenses)
-            .use { thirdPartyLicensesFile -> OssLicensesParser.parseLicense(metadata, thirdPartyLicensesFile) }
-
-        navigateToThirdPartyLicenseFragment(thirdPartyLicense)
+        val res = requireContext().resources
+        val pkg = requireContext().packageName
+        val licensesResId = res.getIdentifier("third_party_licenses", "raw", pkg)
+        if (licensesResId != 0) {
+            val thirdPartyLicense = res
+                .openRawResource(licensesResId)
+                .use { thirdPartyLicensesFile -> OssLicensesParser.parseLicense(metadata, thirdPartyLicensesFile) }
+            navigateToThirdPartyLicenseFragment(thirdPartyLicense)
+        }
     }
 
     private fun navigateToThirdPartyLicenseFragment(thirdPartyLicense: ThirdPartyLicense) {

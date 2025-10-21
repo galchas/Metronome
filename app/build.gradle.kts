@@ -17,9 +17,8 @@
  */
 
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.library")
     alias(libs.plugins.kotlin.android)
-    id("com.google.android.gms.oss-licenses-plugin")
     id("kotlin-kapt")
     id("kotlin-parcelize")
 }
@@ -35,11 +34,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.bobek.metronome"
         minSdk = 21
-        targetSdk = 36
-        versionCode = 23
-        versionName = "1.8.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -47,33 +42,9 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     buildFeatures {
         buildConfig = true
         dataBinding = true
-    }
-    androidResources {
-        generateLocaleConfig = true
-    }
-    testOptions {
-        managedDevices {
-            devices {
-                maybeCreate<com.android.build.api.dsl.ManagedVirtualDevice>("pixel9api34").apply {
-                    device = "Pixel 9"
-                    apiLevel = 34
-                    systemImageSource = "aosp"
-                }
-            }
-        }
     }
     packaging {
         resources {

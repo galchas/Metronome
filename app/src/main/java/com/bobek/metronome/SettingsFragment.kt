@@ -31,7 +31,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         findPreference<Preference>(PreferenceConstants.VERSION)?.summaryProvider =
-            SummaryProvider<Preference> { BuildConfig.VERSION_NAME }
+            SummaryProvider<Preference> {
+                try {
+                    val pm = requireContext().packageManager
+                    val pkg = requireContext().packageName
+                    @Suppress("DEPRECATION")
+                    val info = pm.getPackageInfo(pkg, 0)
+                    info.versionName ?: "unspecified"
+                } catch (_: Exception) {
+                    "unspecified"
+                }
+            }
 
         findPreference<Preference>(PreferenceConstants.THIRD_PARTY_LICENSES)?.setOnPreferenceClickListener { _ ->
             findNavController().navigate(R.id.action_SettingsFragment_to_ThirdPartyLicensesFragment)
