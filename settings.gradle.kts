@@ -40,4 +40,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Metronome"
 
-include(":app")
+include(":app", ":demo")
